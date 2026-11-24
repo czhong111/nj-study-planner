@@ -148,7 +148,7 @@ imaKnowledgeBase(
 ): Promise<{ success: boolean; message: string; items?: KnowledgeItem[]; stub: true }>
 ```
 
-`pull` 用于从 ima 拉取知识资料替换/扩充本地 JSON，`push` 用于回写新增考点与巩固记录。当前返回 `stub: true` 且不发网络请求。对应知识库：数学 `ima_kb_ddBvfykg`、语文 `ima_kb_bMC4MlYG`、英语 `ima_kb_ln2PDBMr`。
+`pull` 用于从 ima 拉取知识资料替换/扩充本地 JSON，`push` 用于回写新增考点与巩固记录。当前返回 `stub: true` 且不发网络请求。对应知识库：数学 `<YOUR_IMA_KB_MATH>`、语文 `<YOUR_IMA_KB_CHINESE>`、英语 `<YOUR_IMA_KB_ENGLISH>`。
 
 ### 2. `glmImageRecognition(file)` — `src/utils/glmImageRecognition.ts`（已接入）
 
@@ -190,8 +190,8 @@ glmImageRecognition(
 
 ### 错题云端保存与 GradeⅢ 自动归档（已完成）
 
-- 已开通 WorkBuddy 云服务（复用原应用 `wbapp_2VJ79C0u8SHSKIYKVv4GHs`，域名不变）。公网录入的错题实时写入云数据库 `wrong_entries`，不再只依赖浏览器本地存储。
-- 目标知识库：GradeⅢ（ID `ima_kb_rrdduh8I`）。照片在前端压缩后随错题存入云端。
+- 已开通 WorkBuddy 云服务（复用原应用 `<YOUR_CLOUD_APP_ID>`，域名不变）。公网录入的错题实时写入云数据库 `wrong_entries`，不再只依赖浏览器本地存储。
+- 目标知识库：GradeⅢ（ID `<YOUR_IMA_KB_ARCHIVE>`）。照片在前端压缩后随错题存入云端。
 - 归档链路：错题写入时标记 `synced_to_ima=false`；定时任务「错题归档到 IMA-GradeⅢ」每 12 小时读取未归档错题，生成 Markdown（照片另行附档）写入 GradeⅢ，成功后回写标记避免重复。全过程用平台内置工具完成归档，密钥不进前端。完整规程见 `SYNC-TO-IMA.md`。
 - **拍照识别（最新）**：错题录入改为拍照优先，`glm-4.5v` 服务端识别切题，识别结果可校对后保存；纯手打录入已取消。GLM Key 只在服务端，前端与公网产物均无 key。
 - 端到端验证：公网拍照「309×6」→ GLM 识别题干成功 → 云数据库写入成功（控制台 0 报错）→ 同步后 GradeⅢ 可检索到该错题的解析内容。
@@ -199,14 +199,14 @@ glmImageRecognition(
 ### 手机侧手动触发「知识库更新错题库」（2026-11-20 新增）
 
 - 错题本页新增「🔄 请求更新错题库」按钮。手机浏览器点击后，向云数据库 `kb_sync_requests` 写入一条 `pending` 请求。
-- 定时任务「知识库更新错题库（手机触发）」**每小时**消费 pending 请求，从 IMA 语文 `ima_kb_bMC4MlYG`、数学 `ima_kb_ddBvfykg`、英语 `ima_kb_ln2PDBMr` 三个知识库读取文档、提炼真实例题/易错题，按题干去重后写入 `wrong_entries`（`client_id=ima-kb-import`），并用本地知识库关键词匹配单元/考点。执行规程见 `SYNC-FROM-IMA.md`。
-- 新导入错题被归档任务（同样提升为每小时）写入 GradeⅢ `ima_kb_rrdduh8I`。
+- 定时任务「知识库更新错题库（手机触发）」**每小时**消费 pending 请求，从 IMA 语文 `<YOUR_IMA_KB_CHINESE>`、数学 `<YOUR_IMA_KB_MATH>`、英语 `<YOUR_IMA_KB_ENGLISH>` 三个知识库读取文档、提炼真实例题/易错题，按题干去重后写入 `wrong_entries`（`client_id=ima-kb-import`），并用本地知识库关键词匹配单元/考点。执行规程见 `SYNC-FROM-IMA.md`。
+- 新导入错题被归档任务（同样提升为每小时）写入 GradeⅢ `<YOUR_IMA_KB_ARCHIVE>`。
 - **调度延迟**：WorkBuddy 定时任务最小粒度为小时级，手机触发后通常在下一次调度（约 1 小时内）完成；按钮下方会显示最近一次更新状态。
 - 两个任务均绑定 `ima-mcp`，只读三科来源库、不修改删除来源内容；全过程无需 GLM key / API Key。
 
 ### 每月 1 号自动同步知识库错题（2026-11-20 新增）
 
-- 定时任务「每月1号知识库错题同步到GradeⅢ和数据库」：**每月 1 号 08:00** 自动从 IMA 语文 / 数学 / 英语三库识别例题 / 易错题，按题干去重后写入云数据库 `wrong_entries`，并立即把新增错题归档到 GradeⅢ `ima_kb_rrdduh8I`（归档成功后回写 `synced_to_ima=true`）。
+- 定时任务「每月1号知识库错题同步到GradeⅢ和数据库」：**每月 1 号 08:00** 自动从 IMA 语文 / 数学 / 英语三库识别例题 / 易错题，按题干去重后写入云数据库 `wrong_entries`，并立即把新增错题归档到 GradeⅢ `<YOUR_IMA_KB_ARCHIVE>`（归档成功后回写 `synced_to_ima=true`）。
 - 「如果有的话」：仅当知识库中确实识别到错题才写入；识别不到则本轮不写任何数据。按题干去重保证幂等，每月执行不会累积重复。
 - 与手机手动触发任务共用 `SYNC-FROM-IMA.md` 规程和去重规则；三个定时任务（每月同步 / 手机触发同步 / 错题归档）均绑定 `ima-mcp`，无需任何 API Key。
 

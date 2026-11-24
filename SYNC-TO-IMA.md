@@ -1,12 +1,12 @@
 # 错题同步到 IMA GradeⅢ · 执行规程（SOP）
 
 本文件供定时任务（自动化会话）严格遵循，把云数据库中未归档的错题写入 IMA 知识库
-**GradeⅢ**（`ima_kb_rrdduh8I`）。全程使用平台内置工具，不需要 GLM、不需要任何 API Key。
+**GradeⅢ**（`<YOUR_IMA_KB_ARCHIVE>`）。全程使用平台内置工具，不需要 GLM、不需要任何 API Key。
 
 ## 固定标识
 
-- 应用 ID（云数据库）：`wbapp_2VJ79C0u8SHSKIYKVv4GHs`
-- IMA 知识库：GradeⅢ / `ima_kb_rrdduh8I`（可写）
+- 应用 ID（云数据库）：`<YOUR_CLOUD_APP_ID>`
+- IMA 知识库：GradeⅢ / `<YOUR_IMA_KB_ARCHIVE>`（可写）
 - 数据表：`public.wrong_entries`
 - 工作目录：`C:\projects\nj-study-planner`
 - 归档临时目录：`C:\projects\nj-study-planner\.ima-archive`
@@ -40,7 +40,7 @@ LIMIT 50
 
 1. 统计文件字节数 `file_size`（ASCII 字符按 1 字节、中文按 3 字节，或用 `wc -c`）。
 2. 调用 IMA `create_media`：
-   - `knowledge_base_id`: `ima_kb_rrdduh8I`
+   - `knowledge_base_id`: `<YOUR_IMA_KB_ARCHIVE>`
    - `file_name`: 文件名（如 `错题归档-2026-11-20.md`）
    - `file_ext`: `md`
    - `content_type`: `text/markdown`
@@ -74,7 +74,7 @@ WHERE synced_to_ima = false AND created_at <= now()
 
 ### 6. 校验
 
-用 IMA `get_knowledge_list`（`knowledge_base_id: ima_kb_rrdduh8I`）确认本轮文件已出现在列表中。
+用 IMA `get_knowledge_list`（`knowledge_base_id: <YOUR_IMA_KB_ARCHIVE>`）确认本轮文件已出现在列表中。
 
 ## 失败处理
 

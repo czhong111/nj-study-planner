@@ -10,13 +10,13 @@
 
 ## 固定参数（不要改动）
 
-- 云数据库应用 ID：`wbapp_2VJ79C0u8SHSKIYKVv4GHs`
+- 云数据库应用 ID：`<YOUR_CLOUD_APP_ID>`
 - 云数据库表：`public.wrong_entries`（错题库）、`public.kb_sync_requests`（触发请求）
 - IMA 知识库（来源，只读）：
-  - 语文：`ima_kb_bMC4MlYG`
-  - 数学：`ima_kb_ddBvfykg`
-  - 英语：`ima_kb_ln2PDBMr`
-- IMA 知识库（归档目标，只写）：GradeⅢ `ima_kb_rrdduh8I`
+  - 语文：`<YOUR_IMA_KB_CHINESE>`
+  - 数学：`<YOUR_IMA_KB_MATH>`
+  - 英语：`<YOUR_IMA_KB_ENGLISH>`
+- IMA 知识库（归档目标，只写）：GradeⅢ `<YOUR_IMA_KB_ARCHIVE>`
 - 本地知识库参考：`src/data/knowledge-base.json`（用于考点/单元/知识点关键词对照与匹配）
 
 ## 执行步骤
